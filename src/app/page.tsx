@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import ShoppingList from "@/components/ShoppingList";
 import { ShoppingCart } from "lucide-react";
 
@@ -23,7 +24,7 @@ export default async function Home() {
         </div>
 
         <ShoppingList
-          initialItems={items.map((item) => ({
+          initialItems={items.map((item: Prisma.ItemGetPayload<object>) => ({
             ...item,
             createdAt: item.createdAt.toISOString(),
           }))}
