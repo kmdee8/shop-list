@@ -5,11 +5,18 @@ import Section from "./Section";
 import ItemRow, { Item } from "./ItemRow";
 import AddItemForm from "./AddItemForm";
 
-interface ShoppingListProps {
-  initialItems: Item[];
+interface InventoryItem {
+  id: number;
+  name: string;
+  category: string;
 }
 
-export default function ShoppingList({ initialItems }: ShoppingListProps) {
+interface ShoppingListProps {
+  initialItems: Item[];
+  inventory: InventoryItem[];
+}
+
+export default function ShoppingList({ initialItems, inventory }: ShoppingListProps) {
   const [items, setItems] = useState<Item[]>(initialItems);
   const [loadingIds, setLoadingIds] = useState<Set<number>>(new Set());
 
@@ -77,7 +84,7 @@ export default function ShoppingList({ initialItems }: ShoppingListProps) {
 
   return (
     <div>
-      <AddItemForm onAdd={handleAdd} />
+      <AddItemForm onAdd={handleAdd} inventory={inventory} />
 
       <Section title="To Buy" count={toBuy.length} defaultOpen={true}>
         <div>

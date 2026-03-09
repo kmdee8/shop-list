@@ -1,0 +1,338 @@
+import { PrismaClient } from ".prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import "dotenv/config";
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DIRECT_URL!,
+});
+
+const prisma = new PrismaClient({ adapter });
+
+const groceryItems = [
+  // Fruit & Vegetables
+  { name: "Apples", category: "Fruit & Vegetables" },
+  { name: "Bananas", category: "Fruit & Vegetables" },
+  { name: "Oranges", category: "Fruit & Vegetables" },
+  { name: "Lemons", category: "Fruit & Vegetables" },
+  { name: "Limes", category: "Fruit & Vegetables" },
+  { name: "Grapes", category: "Fruit & Vegetables" },
+  { name: "Strawberries", category: "Fruit & Vegetables" },
+  { name: "Raspberries", category: "Fruit & Vegetables" },
+  { name: "Blueberries", category: "Fruit & Vegetables" },
+  { name: "Blackberries", category: "Fruit & Vegetables" },
+  { name: "Pears", category: "Fruit & Vegetables" },
+  { name: "Peaches", category: "Fruit & Vegetables" },
+  { name: "Plums", category: "Fruit & Vegetables" },
+  { name: "Mango", category: "Fruit & Vegetables" },
+  { name: "Pineapple", category: "Fruit & Vegetables" },
+  { name: "Melon", category: "Fruit & Vegetables" },
+  { name: "Watermelon", category: "Fruit & Vegetables" },
+  { name: "Avocado", category: "Fruit & Vegetables" },
+  { name: "Tomatoes", category: "Fruit & Vegetables" },
+  { name: "Cherry Tomatoes", category: "Fruit & Vegetables" },
+  { name: "Cucumber", category: "Fruit & Vegetables" },
+  { name: "Lettuce", category: "Fruit & Vegetables" },
+  { name: "Baby Spinach", category: "Fruit & Vegetables" },
+  { name: "Kale", category: "Fruit & Vegetables" },
+  { name: "Broccoli", category: "Fruit & Vegetables" },
+  { name: "Cauliflower", category: "Fruit & Vegetables" },
+  { name: "Cabbage", category: "Fruit & Vegetables" },
+  { name: "Carrots", category: "Fruit & Vegetables" },
+  { name: "Parsnips", category: "Fruit & Vegetables" },
+  { name: "Potatoes", category: "Fruit & Vegetables" },
+  { name: "Sweet Potatoes", category: "Fruit & Vegetables" },
+  { name: "Onions", category: "Fruit & Vegetables" },
+  { name: "Red Onions", category: "Fruit & Vegetables" },
+  { name: "Spring Onions", category: "Fruit & Vegetables" },
+  { name: "Garlic", category: "Fruit & Vegetables" },
+  { name: "Ginger", category: "Fruit & Vegetables" },
+  { name: "Courgette", category: "Fruit & Vegetables" },
+  { name: "Aubergine", category: "Fruit & Vegetables" },
+  { name: "Peppers", category: "Fruit & Vegetables" },
+  { name: "Chillies", category: "Fruit & Vegetables" },
+  { name: "Mushrooms", category: "Fruit & Vegetables" },
+  { name: "Celery", category: "Fruit & Vegetables" },
+  { name: "Leeks", category: "Fruit & Vegetables" },
+  { name: "Asparagus", category: "Fruit & Vegetables" },
+  { name: "Green Beans", category: "Fruit & Vegetables" },
+  { name: "Peas", category: "Fruit & Vegetables" },
+  { name: "Sweetcorn", category: "Fruit & Vegetables" },
+  { name: "Butternut Squash", category: "Fruit & Vegetables" },
+  { name: "Rocket", category: "Fruit & Vegetables" },
+
+  // Meat & Fish
+  { name: "Chicken Breasts", category: "Meat & Fish" },
+  { name: "Chicken Thighs", category: "Meat & Fish" },
+  { name: "Whole Chicken", category: "Meat & Fish" },
+  { name: "Beef Mince", category: "Meat & Fish" },
+  { name: "Beef Steak", category: "Meat & Fish" },
+  { name: "Pork Chops", category: "Meat & Fish" },
+  { name: "Pork Mince", category: "Meat & Fish" },
+  { name: "Lamb Mince", category: "Meat & Fish" },
+  { name: "Lamb Chops", category: "Meat & Fish" },
+  { name: "Sausages", category: "Meat & Fish" },
+  { name: "Bacon Rashers", category: "Meat & Fish" },
+  { name: "Ham", category: "Meat & Fish" },
+  { name: "Smoked Salmon", category: "Meat & Fish" },
+  { name: "Salmon Fillets", category: "Meat & Fish" },
+  { name: "Cod Fillets", category: "Meat & Fish" },
+  { name: "Haddock Fillets", category: "Meat & Fish" },
+  { name: "Tuna Steaks", category: "Meat & Fish" },
+  { name: "Prawns", category: "Meat & Fish" },
+  { name: "Fish Fingers", category: "Meat & Fish" },
+  { name: "Turkey Mince", category: "Meat & Fish" },
+
+  // Dairy & Eggs
+  { name: "Whole Milk", category: "Dairy & Eggs" },
+  { name: "Semi-Skimmed Milk", category: "Dairy & Eggs" },
+  { name: "Skimmed Milk", category: "Dairy & Eggs" },
+  { name: "Oat Milk", category: "Dairy & Eggs" },
+  { name: "Almond Milk", category: "Dairy & Eggs" },
+  { name: "Soya Milk", category: "Dairy & Eggs" },
+  { name: "Butter", category: "Dairy & Eggs" },
+  { name: "Salted Butter", category: "Dairy & Eggs" },
+  { name: "Cheddar Cheese", category: "Dairy & Eggs" },
+  { name: "Mozzarella", category: "Dairy & Eggs" },
+  { name: "Brie", category: "Dairy & Eggs" },
+  { name: "Stilton", category: "Dairy & Eggs" },
+  { name: "Parmesan", category: "Dairy & Eggs" },
+  { name: "Cream Cheese", category: "Dairy & Eggs" },
+  { name: "Cottage Cheese", category: "Dairy & Eggs" },
+  { name: "Greek Yogurt", category: "Dairy & Eggs" },
+  { name: "Natural Yogurt", category: "Dairy & Eggs" },
+  { name: "Soured Cream", category: "Dairy & Eggs" },
+  { name: "Double Cream", category: "Dairy & Eggs" },
+  { name: "Single Cream", category: "Dairy & Eggs" },
+  { name: "Eggs", category: "Dairy & Eggs" },
+  { name: "Free Range Eggs", category: "Dairy & Eggs" },
+
+  // Bakery & Bread
+  { name: "White Bread", category: "Bakery & Bread" },
+  { name: "Wholemeal Bread", category: "Bakery & Bread" },
+  { name: "Sourdough Bread", category: "Bakery & Bread" },
+  { name: "Rolls", category: "Bakery & Bread" },
+  { name: "Bagels", category: "Bakery & Bread" },
+  { name: "Croissants", category: "Bakery & Bread" },
+  { name: "Crumpets", category: "Bakery & Bread" },
+  { name: "English Muffins", category: "Bakery & Bread" },
+  { name: "Pitta Bread", category: "Bakery & Bread" },
+  { name: "Tortilla Wraps", category: "Bakery & Bread" },
+  { name: "Naan Bread", category: "Bakery & Bread" },
+
+  // Tins, Jars & Packets
+  { name: "Baked Beans", category: "Tins & Jars" },
+  { name: "Chopped Tomatoes", category: "Tins & Jars" },
+  { name: "Tomato Passata", category: "Tins & Jars" },
+  { name: "Coconut Milk", category: "Tins & Jars" },
+  { name: "Chickpeas", category: "Tins & Jars" },
+  { name: "Kidney Beans", category: "Tins & Jars" },
+  { name: "Lentils", category: "Tins & Jars" },
+  { name: "Tinned Tuna", category: "Tins & Jars" },
+  { name: "Tinned Salmon", category: "Tins & Jars" },
+  { name: "Tinned Sweetcorn", category: "Tins & Jars" },
+  { name: "Tinned Peaches", category: "Tins & Jars" },
+  { name: "Peanut Butter", category: "Tins & Jars" },
+  { name: "Jam", category: "Tins & Jars" },
+  { name: "Marmalade", category: "Tins & Jars" },
+  { name: "Honey", category: "Tins & Jars" },
+  { name: "Marmite", category: "Tins & Jars" },
+  { name: "Tomato Ketchup", category: "Tins & Jars" },
+  { name: "Brown Sauce", category: "Tins & Jars" },
+  { name: "Mayonnaise", category: "Tins & Jars" },
+  { name: "Mustard", category: "Tins & Jars" },
+  { name: "Salad Cream", category: "Tins & Jars" },
+  { name: "Soy Sauce", category: "Tins & Jars" },
+  { name: "Worcestershire Sauce", category: "Tins & Jars" },
+  { name: "Olive Oil", category: "Tins & Jars" },
+  { name: "Vegetable Oil", category: "Tins & Jars" },
+  { name: "Sunflower Oil", category: "Tins & Jars" },
+  { name: "White Wine Vinegar", category: "Tins & Jars" },
+  { name: "Balsamic Vinegar", category: "Tins & Jars" },
+
+  // Pasta, Rice & Grains
+  { name: "Spaghetti", category: "Pasta, Rice & Grains" },
+  { name: "Penne Pasta", category: "Pasta, Rice & Grains" },
+  { name: "Fusilli Pasta", category: "Pasta, Rice & Grains" },
+  { name: "Tagliatelle", category: "Pasta, Rice & Grains" },
+  { name: "Lasagne Sheets", category: "Pasta, Rice & Grains" },
+  { name: "Basmati Rice", category: "Pasta, Rice & Grains" },
+  { name: "Long Grain Rice", category: "Pasta, Rice & Grains" },
+  { name: "Jasmine Rice", category: "Pasta, Rice & Grains" },
+  { name: "Arborio Rice", category: "Pasta, Rice & Grains" },
+  { name: "Egg Noodles", category: "Pasta, Rice & Grains" },
+  { name: "Rice Noodles", category: "Pasta, Rice & Grains" },
+  { name: "Couscous", category: "Pasta, Rice & Grains" },
+  { name: "Quinoa", category: "Pasta, Rice & Grains" },
+  { name: "Pearl Barley", category: "Pasta, Rice & Grains" },
+  { name: "Oats", category: "Pasta, Rice & Grains" },
+
+  // Baking & Cooking
+  { name: "Plain Flour", category: "Baking & Cooking" },
+  { name: "Self Raising Flour", category: "Baking & Cooking" },
+  { name: "Caster Sugar", category: "Baking & Cooking" },
+  { name: "Granulated Sugar", category: "Baking & Cooking" },
+  { name: "Icing Sugar", category: "Baking & Cooking" },
+  { name: "Brown Sugar", category: "Baking & Cooking" },
+  { name: "Baking Powder", category: "Baking & Cooking" },
+  { name: "Bicarbonate of Soda", category: "Baking & Cooking" },
+  { name: "Cocoa Powder", category: "Baking & Cooking" },
+  { name: "Vanilla Extract", category: "Baking & Cooking" },
+  { name: "Dark Chocolate", category: "Baking & Cooking" },
+  { name: "Milk Chocolate", category: "Baking & Cooking" },
+  { name: "Yeast", category: "Baking & Cooking" },
+  { name: "Cornflour", category: "Baking & Cooking" },
+  { name: "Breadcrumbs", category: "Baking & Cooking" },
+
+  // Herbs, Spices & Seasonings
+  { name: "Salt", category: "Herbs & Spices" },
+  { name: "Black Pepper", category: "Herbs & Spices" },
+  { name: "Cumin", category: "Herbs & Spices" },
+  { name: "Coriander", category: "Herbs & Spices" },
+  { name: "Turmeric", category: "Herbs & Spices" },
+  { name: "Paprika", category: "Herbs & Spices" },
+  { name: "Smoked Paprika", category: "Herbs & Spices" },
+  { name: "Chilli Powder", category: "Herbs & Spices" },
+  { name: "Cinnamon", category: "Herbs & Spices" },
+  { name: "Nutmeg", category: "Herbs & Spices" },
+  { name: "Mixed Herbs", category: "Herbs & Spices" },
+  { name: "Oregano", category: "Herbs & Spices" },
+  { name: "Thyme", category: "Herbs & Spices" },
+  { name: "Rosemary", category: "Herbs & Spices" },
+  { name: "Basil", category: "Herbs & Spices" },
+  { name: "Bay Leaves", category: "Herbs & Spices" },
+  { name: "Garlic Powder", category: "Herbs & Spices" },
+  { name: "Onion Powder", category: "Herbs & Spices" },
+  { name: "Garam Masala", category: "Herbs & Spices" },
+  { name: "Curry Powder", category: "Herbs & Spices" },
+
+  // Snacks & Crisps
+  { name: "Crisps", category: "Snacks" },
+  { name: "Tortilla Chips", category: "Snacks" },
+  { name: "Popcorn", category: "Snacks" },
+  { name: "Nuts", category: "Snacks" },
+  { name: "Mixed Nuts", category: "Snacks" },
+  { name: "Cashews", category: "Snacks" },
+  { name: "Almonds", category: "Snacks" },
+  { name: "Walnuts", category: "Snacks" },
+  { name: "Rice Cakes", category: "Snacks" },
+  { name: "Crackers", category: "Snacks" },
+  { name: "Digestive Biscuits", category: "Snacks" },
+  { name: "Rich Tea Biscuits", category: "Snacks" },
+  { name: "Hobnobs", category: "Snacks" },
+  { name: "Chocolate Digestives", category: "Snacks" },
+  { name: "Jaffa Cakes", category: "Snacks" },
+
+  // Breakfast Cereals
+  { name: "Cornflakes", category: "Breakfast Cereals" },
+  { name: "Weetabix", category: "Breakfast Cereals" },
+  { name: "Shreddies", category: "Breakfast Cereals" },
+  { name: "Bran Flakes", category: "Breakfast Cereals" },
+  { name: "Muesli", category: "Breakfast Cereals" },
+  { name: "Granola", category: "Breakfast Cereals" },
+  { name: "Porridge Oats", category: "Breakfast Cereals" },
+  { name: "Coco Pops", category: "Breakfast Cereals" },
+  { name: "Cheerios", category: "Breakfast Cereals" },
+
+  // Hot Drinks
+  { name: "Tea Bags", category: "Hot Drinks" },
+  { name: "Instant Coffee", category: "Hot Drinks" },
+  { name: "Ground Coffee", category: "Hot Drinks" },
+  { name: "Coffee Pods", category: "Hot Drinks" },
+  { name: "Hot Chocolate", category: "Hot Drinks" },
+  { name: "Green Tea", category: "Hot Drinks" },
+  { name: "Herbal Tea", category: "Hot Drinks" },
+
+  // Cold Drinks
+  { name: "Orange Juice", category: "Cold Drinks" },
+  { name: "Apple Juice", category: "Cold Drinks" },
+  { name: "Sparkling Water", category: "Cold Drinks" },
+  { name: "Still Water", category: "Cold Drinks" },
+  { name: "Lemonade", category: "Cold Drinks" },
+  { name: "Cola", category: "Cold Drinks" },
+  { name: "Diet Cola", category: "Cold Drinks" },
+  { name: "Squash", category: "Cold Drinks" },
+  { name: "Tonic Water", category: "Cold Drinks" },
+  { name: "Smoothies", category: "Cold Drinks" },
+
+  // Frozen Foods
+  { name: "Frozen Peas", category: "Frozen" },
+  { name: "Frozen Sweetcorn", category: "Frozen" },
+  { name: "Frozen Spinach", category: "Frozen" },
+  { name: "Frozen Chips", category: "Frozen" },
+  { name: "Frozen Pizza", category: "Frozen" },
+  { name: "Ice Cream", category: "Frozen" },
+  { name: "Frozen Fish Fillets", category: "Frozen" },
+  { name: "Frozen Prawns", category: "Frozen" },
+  { name: "Frozen Berries", category: "Frozen" },
+  { name: "Frozen Pastry", category: "Frozen" },
+
+  // Condiments & Sauces
+  { name: "Pasta Sauce", category: "Condiments & Sauces" },
+  { name: "Pesto", category: "Condiments & Sauces" },
+  { name: "Tikka Masala Sauce", category: "Condiments & Sauces" },
+  { name: "Korma Sauce", category: "Condiments & Sauces" },
+  { name: "Sweet Chilli Sauce", category: "Condiments & Sauces" },
+  { name: "Sriracha", category: "Condiments & Sauces" },
+  { name: "Tabasco", category: "Condiments & Sauces" },
+  { name: "Gravy Granules", category: "Condiments & Sauces" },
+  { name: "Stock Cubes", category: "Condiments & Sauces" },
+  { name: "Hoisin Sauce", category: "Condiments & Sauces" },
+  { name: "Oyster Sauce", category: "Condiments & Sauces" },
+
+  // Household
+  { name: "Washing Up Liquid", category: "Household" },
+  { name: "Dishwasher Tablets", category: "Household" },
+  { name: "Washing Powder", category: "Household" },
+  { name: "Fabric Softener", category: "Household" },
+  { name: "Kitchen Roll", category: "Household" },
+  { name: "Toilet Roll", category: "Household" },
+  { name: "Bin Bags", category: "Household" },
+  { name: "Clingfilm", category: "Household" },
+  { name: "Tin Foil", category: "Household" },
+  { name: "Sandwich Bags", category: "Household" },
+  { name: "Washing Up Sponge", category: "Household" },
+  { name: "Bleach", category: "Household" },
+  { name: "All Purpose Cleaner", category: "Household" },
+  { name: "Bathroom Cleaner", category: "Household" },
+  { name: "Air Freshener", category: "Household" },
+
+  // Personal Care
+  { name: "Shampoo", category: "Personal Care" },
+  { name: "Conditioner", category: "Personal Care" },
+  { name: "Body Wash", category: "Personal Care" },
+  { name: "Soap", category: "Personal Care" },
+  { name: "Toothpaste", category: "Personal Care" },
+  { name: "Toothbrush", category: "Personal Care" },
+  { name: "Deodorant", category: "Personal Care" },
+  { name: "Moisturiser", category: "Personal Care" },
+  { name: "Razor Blades", category: "Personal Care" },
+  { name: "Shaving Foam", category: "Personal Care" },
+  { name: "Cotton Wool Pads", category: "Personal Care" },
+];
+
+async function main() {
+  console.log("Seeding GroceryInventory...");
+
+  let inserted = 0;
+  let skipped = 0;
+
+  for (const item of groceryItems) {
+    try {
+      await prisma.groceryInventory.upsert({
+        where: { name: item.name },
+        update: { category: item.category },
+        create: item,
+      });
+      inserted++;
+    } catch {
+      skipped++;
+    }
+  }
+
+  console.log(`Done! Inserted/updated: ${inserted}, Skipped: ${skipped}`);
+}
+
+main()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());
+

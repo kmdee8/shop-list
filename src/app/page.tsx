@@ -5,11 +5,18 @@ import { ShoppingCart } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 type PrismaItem = Awaited<ReturnType<typeof prisma.item.findMany>>[number];
+type PrismaInventory = Awaited<ReturnType<typeof prisma.groceryInventory.findMany>>[number];
 
 export default async function Home() {
-  const items = await prisma.item.findMany({
-    orderBy: [{ position: "asc" }, { createdAt: "asc" }],
-  });
+  const [items, inventory] = await Promise.all([
+    prisma.item.findMany({
+      orderBy: [{ position: "asc" }, { createdAt: "asc" }],
+    }),
+    prisma.groceryInventory.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, category: true },
+    }),
+  ]);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-white via-purple-50 to-purple-100">
@@ -28,6 +35,11 @@ export default async function Home() {
           initialItems={items.map((item: PrismaItem) => ({
             ...item,
             createdAt: item.createdAt.toISOString(),
+          }))}
+          inventory={inventory.map((i: PrismaInventory) => ({
+            id: i.id,
+            name: i.name,
+            category: i.category,
           }))}
         />
       </div>
