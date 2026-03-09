@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
 import ShoppingList from "@/components/ShoppingList";
 import { ShoppingCart } from "lucide-react";
 
 export const dynamic = "force-dynamic";
+
+type PrismaItem = Awaited<ReturnType<typeof prisma.item.findMany>>[number];
 
 export default async function Home() {
   const items = await prisma.item.findMany({
@@ -24,7 +25,7 @@ export default async function Home() {
         </div>
 
         <ShoppingList
-          initialItems={items.map((item: Prisma.ItemGetPayload<object>) => ({
+          initialItems={items.map((item: PrismaItem) => ({
             ...item,
             createdAt: item.createdAt.toISOString(),
           }))}
