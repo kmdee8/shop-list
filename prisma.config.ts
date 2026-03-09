@@ -10,5 +10,7 @@ export default defineConfig({
   },
   datasource: {
     url: process.env["DATABASE_URL"] as string,
+    // Use for migrations
+    // url: process.env["DIRECT_URL"] as string,
   },
 });
