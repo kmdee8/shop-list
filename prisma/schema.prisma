@@ -6,9 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
 
 model Item {
@@ -18,10 +16,3 @@ model Item {
   position  Int      @default(0)
   createdAt DateTime @default(now())
 }
-
-model GroceryItem {
-  id       Int    @id @default(autoincrement())
-  name     String @unique
-  category String
-}
-
