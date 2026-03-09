@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { X } from "lucide-react";
 
 export interface Item {
   id: number;
@@ -19,7 +19,7 @@ interface ItemRowProps {
 
 export default function ItemRow({ item, onToggle, onDelete, loading }: ItemRowProps) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3 border-b border-purple-50 last:border-b-0 group hover:bg-purple-50 transition-colors">
+    <div className="flex items-center gap-3 px-4 py-3 border-b border-purple-50 last:border-b-0 hover:bg-purple-50 transition-colors">
       <button
         disabled={loading}
         onClick={() => onToggle(item.id, !item.done)}
@@ -48,10 +48,10 @@ export default function ItemRow({ item, onToggle, onDelete, loading }: ItemRowPr
       <button
         onClick={() => onDelete(item.id)}
         disabled={loading}
-        className="opacity-0 group-hover:opacity-100 text-purple-300 hover:text-red-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="text-purple-200 hover:text-red-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="Delete item"
       >
-        <Trash2 className="h-4 w-4" />
+        <X className="h-3.5 w-3.5" />
       </button>
     </div>
   );
